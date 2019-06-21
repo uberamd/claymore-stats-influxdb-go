@@ -197,7 +197,7 @@ func pollClaymoreApi(bc *BaseConfig) {
 					fahrenheit := (tmpVal * 9/5) + 32
 
 					pt, err = client.NewPoint("claymore_stats", tags, map[string]interface{}{
-						"gpu_"+strconv.Itoa(i)+"_temperature_f": fahrenheit,
+						"gpu_"+strconv.Itoa(gpuNum)+"_temperature_f": fahrenheit,
 					}, curTime)
 
 					if err != nil {
