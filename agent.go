@@ -178,13 +178,14 @@ func pollClaymoreApi(bc *BaseConfig) {
 		}
 
 		tmpFanSpeedByGpuArr := strings.Split(response.Results[6], ";")
+		gpuNum := 0
 
 		for i, d := range tmpFanSpeedByGpuArr {
 			if i % 2 == 0 {
 				// even, temperature
 				if tmpVal, success := safeStringToFloat(d); success {
 					pt, err := client.NewPoint("claymore_stats", tags, map[string]interface{}{
-						"gpu_"+strconv.Itoa(i)+"_temperature": tmpVal,
+						"gpu_"+strconv.Itoa(gpuNum)+"_temperature": tmpVal,
 					}, curTime)
 
 					if err != nil {
@@ -209,7 +210,7 @@ func pollClaymoreApi(bc *BaseConfig) {
 				// odd, fan speed
 				if tmpVal, success := safeStringToFloat(d); success {
 					pt, err := client.NewPoint("claymore_stats", tags, map[string]interface{}{
-						"gpu_"+strconv.Itoa(i - 1)+"_fan_speed": tmpVal,
+						"gpu_"+strconv.Itoa(gpuNum)+"_fan_speed": tmpVal,
 					}, curTime)
 
 					if err != nil {
@@ -217,6 +218,8 @@ func pollClaymoreApi(bc *BaseConfig) {
 					}
 
 					bp.AddPoint(pt)
+
+					gpuNum += 1
 				}
 			}
 		}
